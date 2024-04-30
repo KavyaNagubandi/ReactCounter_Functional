@@ -10,7 +10,7 @@ app.use(express.json());
 app.use(cors());
 
 // MongoDB Connection
-mongoose.connect('mongodb://0.0.0.0:27017/counter_db')
+mongoose.connect('mongodb+srv://kavyanagubandi:kavya@crud.nhfvimd.mongodb.net/?retryWrites=true&w=majority&appName=Crud')
 .then(() => console.log('Connected to MongoDB'))
 .catch(err => console.error('Error connecting to MongoDB:', err));
 

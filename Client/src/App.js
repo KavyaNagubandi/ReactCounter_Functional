@@ -130,7 +130,7 @@ const MyCounter = () => {
   );
 };
 const App = () => {
-  const [state, dispatch] = useReducer(counterReducer, { count: null, myCount: null });
+  const [state, dispatch] = useReducer(counterReducer, { count: 0, myCount: 0 });
 
   useEffect(() => {
     const fetchInitialValues = async () => {
@@ -146,9 +146,9 @@ const App = () => {
   }, []);
 
   // Render loading state while fetching initial values
-  if (state.count === null || state.myCount === null) {
-    return <div>Loading...</div>;
-  }
+  // if (state.count === null || state.myCount === null) {
+  //   return <div>Loading...</div>;
+  // }
 
   return (
     <CounterContext.Provider value={{ state, dispatch }}>
