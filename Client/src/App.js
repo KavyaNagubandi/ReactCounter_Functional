@@ -1,4 +1,4 @@
-import React, {  useEffect, useContext, useReducer, useCallback } from 'react';
+import React, { useEffect, useContext, useReducer, useCallback } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
@@ -9,11 +9,11 @@ const CounterContext = React.createContext();
 const counterReducer = (state, action) => {
   switch (action.type) {
     case 'SET':
-      return { count: action.count , myCount: action.myCount};  
+      return { count: action.count, myCount: action.myCount };
     case 'INCREMENT':
-      return { ...state,count: state.count + 1 };
+      return { ...state, count: state.count + 1 };
     case 'DECREMENT':
-      return { ...state,count: state.count - 1 };
+      return { ...state, count: state.count - 1 };
     case 'INCREMENT_MY_COUNT':
       return { ...state, myCount: state.myCount + 1 };
     case 'DECREMENT_MY_COUNT':
@@ -40,37 +40,23 @@ const Counter = () => {
   const { state, dispatch } = useContext(CounterContext);
   const navigate = useNavigate();
 
-  const fetchCounter = useCallback(async () => {
+  const incrementCounter = async () => {
     try {
-      const response = await axios.get("https://reactcounter-functional.onrender.com/api/counter");
-      dispatch({ type: 'SET', count: response.data.count , myCount: response.data.myCount });
-    } catch (err) {
-      console.error(err);
-    }
-  }, [dispatch]);
-
-  useEffect(() => {
-    fetchCounter();
-  }, [fetchCounter]);
-
-  const incrementCounter = useCallback(async () => {
-    try {
-      await axios.post("https://reactcounter-functional.onrender.com/api/counter/increment");
+      await axios.post("https://reactcounter-functional.onrender.com/api/email/increment/your-email@example.com");
       dispatch({ type: 'INCREMENT' });
     } catch (err) {
       console.error(err);
     }
-  }, [dispatch]);
+  };
 
-  const decrementCounter = useCallback(async () => {
+  const decrementCounter = async () => {
     try {
-      await axios.post("https://reactcounter-functional.onrender.com/api/counter/decrement");
+      await axios.post("https://reactcounter-functional.onrender.com/api/email/increment/your-email@example.com");
       dispatch({ type: 'DECREMENT' });
     } catch (err) {
       console.error(err);
     }
-  }, [dispatch]);
-  
+  };
 
   return (
     <div>
@@ -86,43 +72,28 @@ const MyCounter = () => {
   const { state, dispatch } = useContext(CounterContext);
   const navigate = useNavigate();
 
-  const fetchCounter = useCallback(async () => {
+  const incrementMyCount = async () => {
     try {
-      const response = await axios.get("https://reactcounter-functional.onrender.com/api/counter");
-      dispatch({ type: 'SET', count: response.data.count , myCount: response.data.myCount });
-    } catch (err) {
-      console.error(err);
-    }
-  }, [dispatch]);
-
-  useEffect(() => {
-    fetchCounter();
-  }, [fetchCounter]);
-
-  
-  const incrementMyCount = useCallback(async () => {
-    try {
-      await axios.post("https://reactcounter-functional.onrender.com/api/counter/incrementMyCount");
+      await axios.post("https://reactcounter-functional.onrender.com/api/email/incrementMyCount/your-email@example.com");
       dispatch({ type: 'INCREMENT_MY_COUNT' });
     } catch (err) {
       console.error(err);
     }
-  }, [dispatch]);
+  };
 
-  const decrementMyCount = useCallback(async () => {
+  const decrementMyCount = async () => {
     try {
-      await axios.post("https://reactcounter-functional.onrender.com/api/counter/decrementMyCount");
+      await axios.post("https://reactcounter-functional.onrender.com/api/email/incrementMyCount/your-email@example.com");
       dispatch({ type: 'DECREMENT_MY_COUNT' });
     } catch (err) {
       console.error(err);
     }
-  }, [dispatch]);
+  };
 
   return (
     <div>
       <h2>myCounter</h2>
       <p>MyCount: {state.myCount}</p>
-      
       <button onClick={incrementMyCount}>Increment MyCount</button>
       <button onClick={decrementMyCount}>Decrement MyCount</button>
       <button onClick={() => navigate('/')}>Go to Home</button>
@@ -131,24 +102,6 @@ const MyCounter = () => {
 };
 const App = () => {
   const [state, dispatch] = useReducer(counterReducer, { count: 0, myCount: 0 });
-
-  useEffect(() => {
-    const fetchInitialValues = async () => {
-      try {
-        const response = await axios.get("https://reactcounter-functional.onrender.com/api/counter");
-        dispatch({ type: 'SET', count: response.data.count, myCount: response.data.myCount });
-      } catch (err) {
-        console.error(err);
-      }
-    };
-
-    fetchInitialValues();
-  }, []);
-
-  // Render loading state while fetching initial values
-  // if (state.count === null || state.myCount === null) {
-  //   return <div>Loading...</div>;
-  // }
 
   return (
     <CounterContext.Provider value={{ state, dispatch }}>
@@ -178,6 +131,5 @@ const App = () => {
     </CounterContext.Provider>
   );
 };
-
 
 export default App;

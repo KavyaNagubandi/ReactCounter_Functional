@@ -1,4 +1,3 @@
-// express-server/app.js
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -11,84 +10,59 @@ app.use(cors());
 
 // MongoDB Connection
 mongoose.connect('mongodb+srv://kavyanagubandi:kavya@crud.nhfvimd.mongodb.net/?retryWrites=true&w=majority&appName=Crud')
-.then(() => console.log('Connected to MongoDB'))
-.catch(err => console.error('Error connecting to MongoDB:', err));
+    .then(() => console.log('Connected to MongoDB'))
+    .catch(err => console.error('Error connecting to MongoDB:', err));
 
-// Define counter schema and model
-const counterSchema = new mongoose.Schema({
-    count: { type: Number, default: 0 },
-    myCount: { type: Number, default: 0 } //new counter var
-},{ collection: 'counters' });
-const Counter = mongoose.model('Counter', counterSchema);
+// Define schema for storing email, counter, and myCounter
+const emailSchema = new mongoose.Schema({
+    email: { type: String, required: true, unique: true },
+    counter: { type: Number, default: 0 },
+    myCounter: { type: Number, default: 0 }
+});
+
+// Create a model for the schema
+const Email = mongoose.model('Email', emailSchema);
 
 // Routes
-app.get('/api/counter', async (req, res) => {
-    console.log("Reached GET method")
+// Get all emails along with their counter and myCounter values
+app.get('/api/emails', async (req, res) => {
     try {
-        
-        const counter = await Counter.findOne();
-        console.log(counter);
-        res.json(counter);
+        const emails = await Email.find();
+        res.json(emails);
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: 'Server Error' });
     }
 });
 
-app.post('/api/counter/increment', async (req, res) => {
+// Increment counter for a specific email
+app.post('/api/email/increment/:email', async (req, res) => {
     try {
-        let counter = await Counter.findOne();
-        if (!counter) {
-            counter = new Counter();
+        const { email } = req.params;
+        let foundEmail = await Email.findOne({ email });
+        if (!foundEmail) {
+            foundEmail = new Email({ email });
         }
-        counter.count++;
-        await counter.save();
-        res.json(counter);
+        foundEmail.counter++;
+        await foundEmail.save();
+        res.json(foundEmail);
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: 'Server Error' });
     }
 });
 
-app.post('/api/counter/incrementMyCount', async (req, res) => {
+// Increment myCounter for a specific email
+app.post('/api/email/incrementMyCount/:email', async (req, res) => {
     try {
-        let counter = await Counter.findOne();
-        if (!counter) {
-            counter = new Counter();
+        const { email } = req.params;
+        let foundEmail = await Email.findOne({ email });
+        if (!foundEmail) {
+            foundEmail = new Email({ email });
         }
-        counter.myCount++;
-        await counter.save();
-        res.json(counter);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: 'Server Error' });
-    }
-});
-
-app.post('/api/counter/decrement', async (req, res) => {
-    try {
-        let counter = await Counter.findOne();
-        if (!counter) {
-            counter = new Counter();
-        }
-        counter.count--;
-        await counter.save();
-        res.json(counter);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: 'Server Error' });
-    }
-});
-
-app.post('/api/counter/decrementMyCount', async (req, res) => {
-    try {
-        let counter = await Counter.findOne();
-        if (!counter) {
-            counter = new Counter();
-        }
-        counter.myCount--;
-        await counter.save();
-        res.json(counter);
+        foundEmail.myCounter++;
+        await foundEmail.save();
+        res.json(foundEmail);
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: 'Server Error' });
